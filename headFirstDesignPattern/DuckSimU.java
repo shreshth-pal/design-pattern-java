@@ -1,4 +1,4 @@
-package head_first_design_patterns;
+package headFirstDesignPattern;
 
 interface  FlyBehaviour{
     void fly();
@@ -88,6 +88,14 @@ class MuteQuack implements QuackBehaviour{
         System.out.println("All ducks float even decoys");
     };
 
+    public void setQuackBehaviour(QuackBehaviour quackBehaviour) {
+        this.quackBehaviour = quackBehaviour;
+    }
+
+    public void setFlyBehaviour(FlyBehaviour flyBehaviour) {
+        this.flyBehaviour = flyBehaviour;
+    }
+
     
 };
 
@@ -108,13 +116,34 @@ class MallardDuck extends Duck{
     
 }
 
-public class duckSimU {
+class ModelDuck extends Duck{
+
+    public ModelDuck() {
+        super(new FlyWithNoWings(), new Quack());
+    }
+
+    @Override
+    public void display() {
+        System.out.println("I am a model duck");
+    }
+    
+}
+
+public class DuckSimU {
     public static void main(String[] args) {
 
         Duck mallard= new MallardDuck();
         mallard.fly();
         mallard.performQuack();
         mallard.display();
+
+        Duck model= new ModelDuck();
+
+        model.fly();
+
+        model.setFlyBehaviour(new FlyWithRocketFuel());
+
+        model.fly();
         
     }
 }
