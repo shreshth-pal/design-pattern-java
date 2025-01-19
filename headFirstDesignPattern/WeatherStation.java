@@ -1,9 +1,21 @@
 package headFirstDesignPattern;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherStation {
 
+    public static void main(String[] args) {
+        WeatherData weatherData=new WeatherData();
+
+        CurrentConditionsDisplay currentConditionsDisplay= new CurrentConditionsDisplay(weatherData);
+        ForecastDisplay forecastDisplay=new ForecastDisplay(weatherData);
+
+        
+
+        weatherData.setMeasurements(45, 50, 30.0f);
+        weatherData.setMeasurements(40,57, 28.9f);
+    }
 }
 
 
@@ -31,7 +43,7 @@ interface DisplayElement{
 
 class WeatherData implements Subject{
 
-   private List<Observer>observers;
+   private List<Observer>observers=new ArrayList();
    private float temp;
    private float pressure;
    private float humidity;
@@ -53,7 +65,9 @@ class WeatherData implements Subject{
     @Override
     public void notifyObservers() {
 
-        observers.forEach(t->t.update());
+       for(Observer o:observers){
+            o.update();
+       }
         
        
     }
@@ -64,6 +78,38 @@ class WeatherData implements Subject{
         this.pressure=pressure;
         notifyObservers();
 
+    }
+
+    public List<Observer> getObservers() {
+        return observers;
+    }
+
+    public void setObservers(List<Observer> observers) {
+        this.observers = observers;
+    }
+
+    public float getTemp() {
+        return temp;
+    }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
+    }
+
+    public float getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(float pressure) {
+        this.pressure = pressure;
+    }
+
+    public float getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(float humidity) {
+        this.humidity = humidity;
     }
 
 
@@ -84,11 +130,38 @@ class CurrentConditionsDisplay implements Observer,DisplayElement{
 
     @Override
     public void update() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        temperature=weatherData.getTemp();
+        humidity=weatherData.getHumidity();
+        display();
     }
 
     @Override
     public void display() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("Current Conditions: "+ temperature + "degree Celcius and "+ humidity+"% humidity" );
     }
+}
+
+class ForecastDisplay implements Observer,DisplayElement{
+    WeatherData weatherData;
+    private float currentPressure=29.92f;
+    private float lastPressure;
+
+    public ForecastDisplay(WeatherData o){
+        weatherData=o;
+        weatherData.registerObserver(this);
+    }
+
+    @Override
+    public void update() {
+        lastPressure=currentPressure;
+        currentPressure=weatherData.getPressure();
+        display();
+    }
+
+    @Override
+    public void display() {
+        System.out.println("To be implemented");
+    }
+
+    
 }
