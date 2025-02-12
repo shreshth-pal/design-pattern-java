@@ -8,15 +8,16 @@ public class EntryGate {
         this.parkingSpaceManager = parkingSpaceManager;
     }
 
-    Boolean findParkingSpace(Vehicle vehicle){
+    //record car details through camera
+    public void getVehicleDetails(){
+        System.out.println("What is the vehicle Number");
+        System.out.println("Select Vehicle type \n 1 for two wheeler \n 2 for four wheeler");
+        ParkingSpace parkingSpace=
         
-        return true;
     }
    
     Ticket generateTicket()   {
-        System.out.println("What is the vehicle Number");
-        //accept input
-        System.out.println("Select Vehicle type \n 1 for two wheeler \n 2 for four wheeler");      
+              
         //accept input
         // findParkingSpace(); 
        return null;
