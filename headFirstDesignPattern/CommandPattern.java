@@ -13,6 +13,8 @@ public class CommandPattern {
         simpleRemoteControl.setOnCommand(2,new CeilingFanCommandOn(drawingRoomFan),new CeilingFanCommandOff(drawingRoomFan));
         simpleRemoteControl.setOnCommand(3,new SeteroCommandOn(setero),new SeteroCommandOff(setero));
 
+       System.out.println( simpleRemoteControl.toString());
+
         simpleRemoteControl.onButtonPressed(0);
         simpleRemoteControl.onButtonPressed(1);
         simpleRemoteControl.onButtonPressed(2);
