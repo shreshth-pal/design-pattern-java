@@ -6,41 +6,45 @@ import java.util.Scanner;
 
 public class Board {
     Queue<Player> playerQueue = new LinkedList<>();
-    Cell[][] board;
+    PlayingPeice[][] board;
     int size;
     int turns;
+    int numOfPlayers;
     
-    public Board(){
-        size=3;
-        board=new Cell[size][size];
+    public int getSize(){
+        return size;
+    }
+    public Board(int size){
+        this.size=size;
+        numOfPlayers=2;
+        board=new PlayingPeice[size][size];
         turns=size*size;
-        startGame();
+        for(int i=0;i<numOfPlayers;i++){
+            playerQueue.add(new Player("Shreshth", Pieces.O));
+            playerQueue.add(new Player("Riya", Pieces.X));
+        }
+
+    }
+    public PlayingPeice getPlayingPeice(int x,int y){
+        return board[x][y]; 
     }
 
     void printBoard(){
         for(int i=0;i<size;i++){
             for(int j=0;j<size;j++)
                 System.out.print(board[i][j]+" ");
+            System.out.println("");
         }
-        System.err.println("");
+        
     }
 
-    void startGame(){
-        Scanner scanner = new Scanner(System.in);
-        while(turns>0){
-           System.out.println("Current Board is:");
-           printBoard();
-           Player player= playerQueue.poll();
-           System.out.println("Please select a position "+player.getName() +" and enter \n X coordinate:");  
-           int x=scanner.nextInt();
-           System.out.println("\n Y coordinate:");
-           int y=scanner.nextInt();
-           
-           if(x< size && y <size && x>=0 && y>=0 && board[x][y].getCellChar()!=Pieces.empty){
+    
+    
 
-           }
-
-        }
+    
+        scanner.close();
+        if(turns==0)
+            System.out.println("The game was a draw");
 
     }
 
@@ -50,12 +54,8 @@ public class Board {
 
 
 
-class Cell{
+abstract class Cell{
     Pieces cellChar;
-
-    public Cell(){
-        cellChar=Pieces.empty;
-    }
 
     public Pieces getCellChar() {
         return cellChar;
@@ -64,9 +64,5 @@ class Cell{
     public void setCellChar(Pieces cellChar) {
         this.cellChar = cellChar;
     }
-
-    
-    
-
 
 }

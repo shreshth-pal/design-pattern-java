@@ -7,37 +7,99 @@ public class CommandPattern {
         Light bathroomLight=new Light("bathroom");
         CeilingFan drawingRoomFan= new CeilingFan("Drawing room");
         Setero setero=new Setero();
+        LightCommandOff bedroomLightCommandOff=new LightCommandOff(bedroomLight);
+        LightCommandOff bathroomLightCommandOff=new LightCommandOff(bathroomLight);
+        CeilingFanHighSpeed ceilingFanHighSpeed = new CeilingFanHighSpeed(drawingRoomFan);
 
-        simpleRemoteControl.setOnCommand(0, new LightCommandOn(bedroomLight),new LightCommandOff(bedroomLight));
-        simpleRemoteControl.setOnCommand(1, new LightCommandOn(bathroomLight),new LightCommandOff(bathroomLight));
-        simpleRemoteControl.setOnCommand(2,new CeilingFanCommandOn(drawingRoomFan),new CeilingFanCommandOff(drawingRoomFan));
-        simpleRemoteControl.setOnCommand(3,new SeteroCommandOn(setero),new SeteroCommandOff(setero));
+        LightCommandOn bedroomLightCommandOn=new LightCommandOn(bedroomLight);
+        LightCommandOn bathroomLightCommandOn=new LightCommandOn(bathroomLight);
+        Command gnMacro[]={bedroomLightCommandOff,bathroomLightCommandOff};
+        Command gmMacro[]={bedroomLightCommandOn,bathroomLightCommandOn};
+        Macro goodNightMacro= new Macro(gnMacro);
+        Macro goodMorningMacro =new Macro(gmMacro);
+        simpleRemoteControl.setOnCommand(0, goodMorningMacro,goodNightMacro);
+        simpleRemoteControl.setOnCommand(1, ceilingFanHighSpeed,new LightCommandOff(bathroomLight));
+        // simpleRemoteControl.setOnCommand(2,new CeilingFanCommandOn(drawingRoomFan),new CeilingFanCommandOff(drawingRoomFan));
+        // simpleRemoteControl.setOnCommand(3,new SeteroCommandOn(setero),new SeteroCommandOff(setero));
+        
 
        System.out.println( simpleRemoteControl.toString());
 
         simpleRemoteControl.onButtonPressed(0);
-        simpleRemoteControl.onButtonPressed(1);
-        simpleRemoteControl.onButtonPressed(2);
-        simpleRemoteControl.onButtonPressed(3);
+        simpleRemoteControl.undoPressed();
+        // simpleRemoteControl.onButtonPressed(1);
+        // simpleRemoteControl.onButtonPressed(2);
+        // simpleRemoteControl.onButtonPressed(3);
 
-        simpleRemoteControl.offButtonPressed(3);
-        simpleRemoteControl.offButtonPressed(2);
-        simpleRemoteControl.offButtonPressed(1);
+        // simpleRemoteControl.offButtonPressed(3);
+        // simpleRemoteControl.offButtonPressed(2);
+        // simpleRemoteControl.offButtonPressed(1);
         simpleRemoteControl.offButtonPressed(0);
+        simpleRemoteControl.onButtonPressed(1);
+        simpleRemoteControl.undoPressed();
     }
 }
+
+class CeilingFanHighSpeed implements Command{
+    CeilingFan cf;
+    int prevSpeed;
+    
+
+    public CeilingFanHighSpeed(CeilingFan cf) {
+        this.cf=cf;
+        prevSpeed=cf.getSpeed();
+    }
+    @Override
+    public void execute() {
+       cf.setSpeed(5);
+    }
+
+    @Override
+    public void undo() {
+        cf.setSpeed(prevSpeed);
+    }
+    
+}
+
 
 interface Command{
 
     void execute();
+    void undo();
+}
+
+class Macro implements  Command{
+    Command commands[];
+
+    Macro(Command commands[]){
+        this.commands=commands;
+    }
+
+
+    @Override
+    public void execute() {
+        for (Command command : commands) {
+            command.execute();
+        }
+    }
+
+    @Override
+    public void undo() {
+        for (Command command : commands) {
+            command.undo();
+        }
+    }
+    
 }
 
 class noCommand implements  Command{
 
     @Override
     public void execute() {
-        // TODO Auto-generated method stub
-        System.out.println("Nothing done");
+    }
+
+    @Override
+    public void undo() {
     }
 
 }
@@ -70,6 +132,11 @@ class LightCommandOn implements Command{
     public void execute() {
         light.on();
     }
+
+    @Override
+    public void undo() {
+        light.off();
+    }
     
 } 
 class LightCommandOff implements Command{
@@ -82,6 +149,11 @@ class LightCommandOff implements Command{
     @Override
     public void execute() {
         light.off();
+    }
+
+    @Override
+    public void undo() {
+       light.off();
     }
     
 } 
@@ -132,6 +204,11 @@ class SeteroCommandOn implements Command{
     public void execute(){
         setero.on();
     }
+
+    @Override
+    public void undo() {
+        setero.off();
+    }
 }
 class SeteroCommandOff implements Command{
     
@@ -143,24 +220,41 @@ class SeteroCommandOff implements Command{
     public void execute(){
         setero.off();
     }
+
+    @Override
+    public void undo() {
+        setero.off();
+    }
 }
 
 class CeilingFan{
     boolean isActive;
     String place;
+    int speed;
     public CeilingFan(String place) {
         isActive=false;
         this.place=place;
+        speed=0;
     }
 
     void on(){
         isActive=true;
+        speed=5;
         System.out.println(place +" Fan is on");
     }
 
     void off(){
         isActive=false;
         System.out.println(place +"Fan is off");
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        System.out.println("Speed has been set to"+speed);
+        this.speed = speed;
     }
 
     
@@ -184,6 +278,11 @@ class CeilingFanCommandOn implements  Command{
     public  void execute(){
         ceilingFan.on();
     }
+
+    @Override
+    public void undo() {
+        ceilingFan.off();
+    }
 }
 class CeilingFanCommandOff implements  Command{
     
@@ -201,10 +300,16 @@ class CeilingFanCommandOff implements  Command{
     public  void execute(){
         ceilingFan.off();
     }
+
+    @Override
+    public void undo() {
+        ceilingFan.on();
+    }
 }
 class SimpleRemoteControl {
    private Command[] onCommands;
    private Command[] offCommands;
+   private Command undo;
    private int cnt;
 
     public SimpleRemoteControl(int cnt) {
@@ -227,10 +332,15 @@ class SimpleRemoteControl {
     
     public void onButtonPressed(int slot){
         onCommands[slot].execute();
+        undo=onCommands[slot];
     }
 
     public void offButtonPressed(int slot){
         offCommands[slot].execute();
+        undo=onCommands[slot];    }
+
+    public void undoPressed(){
+        undo.undo();
     }
 
     @Override
