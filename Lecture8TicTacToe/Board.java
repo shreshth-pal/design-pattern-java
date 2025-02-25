@@ -1,32 +1,28 @@
 package Lecture8TicTacToe;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
-
 public class Board {
-    Queue<Player> playerQueue = new LinkedList<>();
-    PlayingPeice[][] board;
+   
+    Pieces[][] board;
+    checkWinner checkWinner;
     int size;
-    int turns;
-    int numOfPlayers;
     
     public int getSize(){
         return size;
     }
-    public Board(int size){
+    public Board(int size,checkWinner stratergy){
+        this.checkWinner=stratergy;
         this.size=size;
-        numOfPlayers=2;
-        board=new PlayingPeice[size][size];
-        turns=size*size;
-        for(int i=0;i<numOfPlayers;i++){
-            playerQueue.add(new Player("Shreshth", Pieces.O));
-            playerQueue.add(new Player("Riya", Pieces.X));
-        }
+        board=new Pieces[size][size];
+        
 
     }
-    public PlayingPeice getPlayingPeice(int x,int y){
+    public Pieces getPlayingPeice(int x,int y){
         return board[x][y]; 
+    }
+    void setPlayingPiece(int x,int y,Pieces p){
+
+        board[x][y]=p;
+
     }
 
     void printBoard(){
@@ -39,30 +35,28 @@ public class Board {
     }
 
     
+
+    
     
 
     
-        scanner.close();
-        if(turns==0)
-            System.out.println("The game was a draw");
+        // scanner.close();
+        // if(turns==0)
+        //     System.out.println("The game was a draw");
 
     }
 
 
 
-}
 
 
 
-abstract class Cell{
-    Pieces cellChar;
 
-    public Pieces getCellChar() {
-        return cellChar;
+    interface checkWinner{
+        boolean didWin(Board board,int x,int y);
     }
-
-    public void setCellChar(Pieces cellChar) {
-        this.cellChar = cellChar;
-    }
-
-}
+    
+    
+  
+    
+    
