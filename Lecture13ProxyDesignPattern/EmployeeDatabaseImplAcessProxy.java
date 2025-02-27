@@ -2,21 +2,21 @@ package Lecture13ProxyDesignPattern;
 
 public class EmployeeDatabaseImplAcessProxy implements EmployeeDatabaseInterface {
     EmployeeDatabaseInterfaceImpl employeeDatabaseInterfaceImpl;
-    String accessLevel;    
+
 
 
     
 
-    public EmployeeDatabaseImplAcessProxy(EmployeeDatabaseInterfaceImpl employeeDatabaseInterfaceImpl,
-            String accessLevel) {
+    public EmployeeDatabaseImplAcessProxy(EmployeeDatabaseInterfaceImpl employeeDatabaseInterfaceImpl
+          ) {
         this.employeeDatabaseInterfaceImpl = employeeDatabaseInterfaceImpl;
-        this.accessLevel = accessLevel;
+        
     }
 
     @Override
-    public void createEmployee() throws Exception{
-       if(accessLevel=="ADMIN"){
-            employeeDatabaseInterfaceImpl.createEmployee();
+    public void createEmployee(String user,Employee emp) throws Exception{
+       if(user.contentEquals("ADMIN")){
+            employeeDatabaseInterfaceImpl.createEmployee(user, emp);
        }
        else{
             throw new Exception("You are not authorized");
@@ -24,18 +24,21 @@ public class EmployeeDatabaseImplAcessProxy implements EmployeeDatabaseInterface
     }
 
     @Override
-    public void deleteEmployee() throws Exception {
-        if(accessLevel=="ADMIN"){
-            employeeDatabaseInterfaceImpl.createEmployee();
-       }
+    public void deleteEmployee(String user,String empId) throws Exception {
+        if(user.contentEquals("ADMIN")){
+            employeeDatabaseInterfaceImpl.deleteEmployee(user, empId);
+          }
        else{
             throw new Exception("You are not authorized");
        }
     }
 
     @Override
-    public void getEmployee() {
-       
+    public Employee getEmployee(String user,String empId) throws Exception {
+     if(user.contentEquals("ADMIN") || user.contentEquals("USER")){
+      return employeeDatabaseInterfaceImpl.getEmployee(user, empId);
     }
+          throw new Exception("You are not authorized");
+     }
 
 }
