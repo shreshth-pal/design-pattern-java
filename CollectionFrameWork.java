@@ -1,13 +1,61 @@
 import java.util.*;
 
+
+class Student implements Comparable<Student>{
+
+    private Integer age;
+    public Integer marks;
+    public String name;
+
+    
+        
+
+    public Student(Integer age, Integer marks, String name) {
+        this.age = age;
+        this.marks = marks;
+        this.name = name;
+        
+    }
+    @Override
+    public String toString() {
+    return "Student{" +
+           "age=" + age +
+           ", marks=" + marks +
+           ", name='" + name + '\'' +
+           '}';
+    }
+
+    @Override
+    public int compareTo(Student that) {
+        return this.age> that.age?1:-1;  
+    }
+    
+}
+
 public class CollectionFrameWork {
+
  
     public static void main(String[] args) {
+        compPractice();
         listPractice();
         setPractice();
         mapPractice();    
         
     }
+    public static void compPractice(){
+        List<Student> std= new ArrayList<>();
+        std.add(new Student(19, 99, "Shres"));
+        std.add(new Student(25, 90, "Sh"));
+        std.add(new Student(20, 99, "Sr"));
+        std.add(new Student(18, 99, "Shhhres"));
+
+        Collections.sort(std);
+
+        System.out.println(std);
+
+    }
+
+
     public static void listPractice(){
         List<Integer> arrayList =new ArrayList<>();
         List<Integer> linkdList =new LinkedList<>();
